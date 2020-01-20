@@ -1,6 +1,6 @@
-# Paladins Artificial Neural Network: Inferencing Module
+# Paladins Artificial Neural Network: Inferencing
 
-This inferencer in this repository applies [the model that I created here](https://github.com/kaisubr/PANN__trainer) onto realtime game data! The inferencer's versioning system will append the model's version (i.e. v4.4-0).
+This inferencer in this repository applies [the model that I created here](https://github.com/kaisubr/PANN__trainer) onto real-time game data! The inferencer's versioning system will append the model's version (i.e. v4.4-0).
 
 Paladins is a first-person shooter with complex game mechanics, such as deployables, revealing, and crowd control effects.
 
@@ -22,6 +22,10 @@ After several iterations, v4.4 performs as follows:
 Inference graphs were saved from EnemyDetection/inference_graph/saved_model OR frozen_inference_graph.pb if that's available. For the ssdlite network, it was saved through Tensorflow toco `tflite_convert` (alternatively you can use `bazel`).
 
 ### What did the results look like?
+
+#### In-game real-time input
+v4.4-1 is still being worked on! I will likely continue using Python `mss` to take in data.
+
 #### Single frame inputs
 v4.4-0 was designed for single frame (300x300 image) inputs.
 * It was able to detect nearly completely obstructed bodies in complex game environments.
