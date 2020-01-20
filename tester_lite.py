@@ -23,7 +23,7 @@ NUM_CLASSES = 1
 PATH_TO_FROZEN_GRAPH = os.path.join(CWD_PATH, 'saved_inference_graph_models', 'tflite_graph-v4.pb')  # "/content/drive/My Drive/Colab Notebooks/EnemyDetection/inference_graph/tflite_graph.pb"
 PATH_TO_LITE_MODEL   = os.path.join(CWD_PATH, 'saved_inference_graph_models', 'detect-v4.tflite') # "/content/drive/My Drive/Colab Notebooks/EnemyDetection/inference_graph/detect.tflite"
 
-IMAGE_NAME = 'j_290-4-1_noxml-noenemies.png'
+IMAGE_NAME = 'j_294-4_noxml-complex.png'
 PATH_TO_IMAGE = os.path.join(CWD_PATH, 'samples', IMAGE_NAME)
 PATH_TO_WRITE = os.path.join(CWD_PATH, 'someshots', IMAGE_NAME.split(".png")[0] + "-v4-detected.png")
 

@@ -4,8 +4,9 @@ Paladins is a first-person shooter with complex game mechanics, such as deployab
 
 The Paladins Neural Network detects enemy models and may be used to intelligently aim the player at a target.
 * The network can detect obfuscated enemies, such as revealed enemies behind walls
-* The model is able to differentiate enemies and allies
+* In some cases, the model was able to predict almost completely obstructed bodies
 * The model is able detect partial bodies (such as a torso but no legs)
+* The model is able to differentiate enemies and allies in complicated environments
 
 ## How effective is it?
 After several iterations, v4.4 performs as follows:
@@ -19,13 +20,17 @@ After several iterations, v4.4 performs as follows:
 Inference graphs were saved from EnemyDetection/inference_graph/saved_model OR frozen_inference_graph.pb if that's available.
 
 ### What did the results look like?
-v4.4 performed as follows:
-* It was able to detect obfuscated enemies and revealed enemies behind walls
-    * ![alt text](/someshots/j_248-4-1-v4-detected.png "") ![alt text](/someshots/j_346-4-1-v4-detected.png "")
-* It was able to detect partially obstructed bodies
+v4.4 performed very well! 
+* It was able to detect nearly completely obstructed bodies in complex game environments.
+    * The image below was discarded from training because it was too ambiguous too label, but the model was still able to detect the enemy located behind the ally:
+    * ![alt text](/someshots/j_294-4_noxml-complex-v4-detected.png "")
+* It was able to detect partially obstructed bodies.
     * ![alt text](/someshots/j_211-4-1_noxml-v4-detected.png "")
+* It was able to detect obfuscated enemies and revealed enemies behind walls.
+    * ![alt text](/someshots/j_248-4-1-v4-detected.png "") ![alt text](/someshots/j_346-4-1-v4-detected.png "")
 * It could differentiate players from allies. Here, no enemies are detected:
     * ![alt text](/someshots/j_290-4-1_noxml-noenemies-v4-detected.png "")
+* More results can be viewed in /someshots/.
 
 ### Training information
 This is how I trained the network:
