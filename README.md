@@ -1,8 +1,10 @@
-# Paladins Neural Network
+# Paladins Artificial Neural Network: Inferencer Module
+
+This inferencer in this repository applies the model that I created [here]() onto realtime game data! The inferencer's versioning system will append the model's version (i.e. v4.4-0).
 
 Paladins is a first-person shooter with complex game mechanics, such as deployables, revealing, and crowd control effects.
 
-The Paladins Neural Network detects enemy models and may be used to intelligently aim the player at a target.
+The Paladins Artificial Neural Network uses a convolutional neural network that detects enemy models and may be used to intelligently aim the player at a target.
 * The network can detect obfuscated enemies, such as revealed enemies behind walls
 * In some cases, the model was able to predict almost completely obstructed bodies
 * The model is able detect partial bodies (such as a torso but no legs)
@@ -20,7 +22,7 @@ After several iterations, v4.4 performs as follows:
 Inference graphs were saved from EnemyDetection/inference_graph/saved_model OR frozen_inference_graph.pb if that's available.
 
 ### What did the results look like?
-v4.4 performed very well! 
+v4.4-0 performed very well for single frame inputs.
 * It was able to detect nearly completely obstructed bodies in complex game environments.
     * The image below was discarded from training because it was too ambiguous to label, but the model was still able to detect the enemy located behind the ally. Notice that this was taken from a real Paladins game, with no 'bots' (such as 'Bot 9'), so overfitting to match label names above the enemy could not have occurred.
     * ![alt text](/someshots/j_294-4_noxml-complex-v4-detected.png "")
