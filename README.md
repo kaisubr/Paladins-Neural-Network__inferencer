@@ -21,8 +21,7 @@ Inference graphs were saved from EnemyDetection/inference_graph/saved_model OR f
 ### What did the results look like?
 v4.4 performed as follows:
 * It was able to detect obfuscated enemies and revealed enemies behind walls
-    * ![alt text](/someshots/j_248-4-1-v4-detected.png "")
-    * ![alt text](/someshots/j_346-4-1-v4-detected.png "")
+    * ![alt text](/someshots/j_248-4-1-v4-detected.png "") ![alt text](/someshots/j_346-4-1-v4-detected.png "")
 * It was able to detect partially obstructed bodies
     * ![alt text](/someshots/j_211-4-1_noxml-v4-detected.png "")
 * It could differentiate players from allies. Here, no enemies are detected:
