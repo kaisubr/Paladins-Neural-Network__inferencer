@@ -3,8 +3,11 @@
 Paladins is a first-person shooter with complex game mechanics, such as deployables, reaviling, and crowd control effects.
 
 The Paladins Neural Network detects enemy models and may be used to intelligently aim the player at a target.
+* The network can detect obfuscated enemies, such as revealed enemies behind walls
+* The model is able to differentiate enemies and allies
+* The model is able detect partial bodies (such as a torso but no legs)
 
-### How effective is it?
+## How effective is it?
 After several iterations, v4.4 performs as follows:
 * On i7-6500U (CPU only), my model averaged 0.18 seconds for a single frame image processing.
 * 0.806 mAP at 0.5 IOU in 60k steps.
@@ -12,6 +15,16 @@ After several iterations, v4.4 performs as follows:
 * Loss for final step was 1.8736447. This can be lowered by further training.
 
 Inference graphs were saved from EnemyDetection/inference_graph/saved_model OR frozen_inference_graph.pb if that's available.
+
+### What did the results look like?
+v4.4 performed as follows:
+* It was able to detect obfuscated enemies and revealed enemies behind walls
+    * ![alt text](/someshots/j_248-4-1-v4-detected.png "")
+    * ![alt text](/someshots/j_346-4-1-v4-detected.png "")
+* It was able to detect partially obstructed bodies
+    * ![alt text](/someshots/j_211-4-1_noxml-v4-detected.png "")
+* It could differentiate players from allies. Here, no enemies are detected:
+    * ![alt text](/someshots/j_290-4-1_noxml-noenemies-v4-detected.png "")
 
 ### Training information
 This is how I trained the network:
@@ -47,12 +60,12 @@ Short discussion:
       * v4.4: I realized I had to export as a TFLite graph instead. Works pretty well! Averaged 0.17-0.19 sec for processing.
 
 ### Other references
-* [Racoon classifier] https://github.com/datitran/raccoon_dataset/tree/93938849301895fb73909842ba04af9b602f677a
-* [Racoon discussion] https://towardsdatascience.com/how-to-train-your-own-object-detector-with-tensorflows-object-detector-api-bec72ecfe1d9
-* [TFLite] https://github.com/QuantuMobileSoftware/mobile_detector
-* [GFG shoe classifier] https://www.geeksforgeeks.org/ml-training-image-classifier-using-tensorflow-object-detection-api/
-* [Sliding windows] http://www.cs.utoronto.ca/~fidler/slides/CSC420/lecture17.pdf
-* [Detection frameworks] https://www.datacamp.com/community/tutorials/object-detection-guide
+* [Racoon classifier](https://github.com/datitran/raccoon_dataset/tree/93938849301895fb73909842ba04af9b602f677a)
+* [Racoon discussion](https://towardsdatascience.com/how-to-train-your-own-object-detector-with-tensorflows-object-detector-api-bec72ecfe1d9)
+* [TFLite](https://github.com/QuantuMobileSoftware/mobile_detector)
+* [GFG shoe classifier](https://www.geeksforgeeks.org/ml-training-image-classifier-using-tensorflow-object-detection-api/)
+* [Sliding windows](http://www.cs.utoronto.ca/~fidler/slides/CSC420/lecture17.pdf)
+* [Detection frameworks](https://www.datacamp.com/community/tutorials/object-detection-guide)
 
 <!-- 
 Notes to self: .../raw contains raw data & xml files, along with 0noxml and 0rename 
