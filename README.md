@@ -1,6 +1,6 @@
 # Paladins Neural Network
 
-Paladins is a first-person shooter with complex game mechanics, such as deployables, reaviling, and crowd control effects.
+Paladins is a first-person shooter with complex game mechanics, such as deployables, revealing, and crowd control effects.
 
 The Paladins Neural Network detects enemy models and may be used to intelligently aim the player at a target.
 * The network can detect obfuscated enemies, such as revealed enemies behind walls
@@ -22,9 +22,9 @@ Inference graphs were saved from EnemyDetection/inference_graph/saved_model OR f
 ### What did the results look like?
 v4.4 performed very well! 
 * It was able to detect nearly completely obstructed bodies in complex game environments.
-    * The image below was discarded from training because it was too ambiguous too label, but the model was still able to detect the enemy located behind the ally:
+    * The image below was discarded from training because it was too ambiguous to label, but the model was still able to detect the enemy located behind the ally. Notice that this was taken from a real match, with no 'bots' (such as 'Bot 9'), so overfitting to match label names above the enemy could not have occurred.
     * ![alt text](/someshots/j_294-4_noxml-complex-v4-detected.png "")
-* It was able to detect partially obstructed bodies.
+* It was able to detect partially obstructed bodies. The image below was also discarded from training because it was too ambiguous to label, but the model performed very well.
     * ![alt text](/someshots/j_211-4-1_noxml-v4-detected.png "")
 * It was able to detect obfuscated enemies and revealed enemies behind walls.
     * ![alt text](/someshots/j_248-4-1-v4-detected.png "") ![alt text](/someshots/j_346-4-1-v4-detected.png "")
@@ -53,19 +53,19 @@ Short discussion:
       Perhaps I might try to train using mobilenet (ssd_mobilenet)
       Other notes: eval.py might force drive update for Tensorboard?
       average_precision: 0.612540 for 23143 steps, very good! Freezing now.
-
       Compiling on my laptop took ~ 1 minute :(
       Yeah, we need another model.
 * v3: Changed model to ssdlite_mobilenet_v2_coco_2018_05_09 in an attempt to improve speed, regularization = 0.004, image resize to 300x300. Cut after 5k steps since mAP was stuck at zero, loss decreasing slowly.
 * v4: And that's when I got this genius idea: running mss with a 300x300 window in the middle of the 720p game running! 
       We need MORE DATA! So, now I have deprecated train to images/train_dep3; new and selected images moved to images/train and updated images/test!
-      * v4.0: Trained to 17k steps using 720p & 300x300 in testing. 
-      * v4.1: Removed all 720p images from testing. Added 150 more images to test, 50 more images to train.
-      * v4.2: Continue training to 60k steps. Edit config to 62 images. Enabled shuffling.
-      * v4.3: I tried to export using Open CV DNN. This revealed errors importing the model with batch norm layers.
-      * v4.4: I realized I had to export as a TFLite graph instead. Works pretty well! Averaged 0.17-0.19 sec for processing.
+    * v4.0: Trained to 17k steps using 720p & 300x300 in testing. 
+    * v4.1: Removed all 720p images from testing. Added 150 more images to test, 50 more images to train.
+    * v4.2: Continue training to 60k steps. Edit config to 62 images. Enabled shuffling.
+    * v4.3: I tried to export using Open CV DNN. This revealed errors importing the model with batch norm layers.
+    * v4.4: I realized I had to export as a TFLite graph instead. Works pretty well! Averaged 0.17-0.19 sec for processing.
 
 ### Other references
+* [Model runtimes](https://stackoverflow.com/questions/46839073/tensorflow-object-detection-api-rcnn-is-slow-on-cpu-1-frame-per-min)
 * [Racoon classifier](https://github.com/datitran/raccoon_dataset/tree/93938849301895fb73909842ba04af9b602f677a)
 * [Racoon discussion](https://towardsdatascience.com/how-to-train-your-own-object-detector-with-tensorflows-object-detector-api-bec72ecfe1d9)
 * [TFLite](https://github.com/QuantuMobileSoftware/mobile_detector)
