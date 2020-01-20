@@ -14,6 +14,8 @@ After several iterations, v4.4 performs as follows:
 * 0.701 mAP at [0.5...0.95] IOU, area = large, in 60k steps.
 * Loss for final step was 1.8736447. This can be lowered by further training.
 
+![alt text](/someshots/mAP.PNG "")
+
 Inference graphs were saved from EnemyDetection/inference_graph/saved_model OR frozen_inference_graph.pb if that's available.
 
 ### What did the results look like?
