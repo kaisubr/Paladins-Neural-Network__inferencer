@@ -22,7 +22,7 @@ Inference graphs were saved from EnemyDetection/inference_graph/saved_model OR f
 ### What did the results look like?
 v4.4 performed very well! 
 * It was able to detect nearly completely obstructed bodies in complex game environments.
-    * The image below was discarded from training because it was too ambiguous to label, but the model was still able to detect the enemy located behind the ally. Notice that this was taken from a real match, with no 'bots' (such as 'Bot 9'), so overfitting to match label names above the enemy could not have occurred.
+    * The image below was discarded from training because it was too ambiguous to label, but the model was still able to detect the enemy located behind the ally. Notice that this was taken from a real Paladins game, with no 'bots' (such as 'Bot 9'), so overfitting to match label names above the enemy could not have occurred.
     * ![alt text](/someshots/j_294-4_noxml-complex-v4-detected.png "")
 * It was able to detect partially obstructed bodies. The image below was also discarded from training because it was too ambiguous to label, but the model performed well.
     * ![alt text](/someshots/j_211-4-1_noxml-v4-detected.png "")
