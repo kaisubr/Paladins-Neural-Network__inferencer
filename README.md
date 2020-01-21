@@ -1,6 +1,6 @@
 # Paladins Artificial Neural Network: Inferencing
 
-This inferencer in this repository applies [the model that I created here](https://github.com/kaisubr/PANN__trainer) onto real-time game data! The inferencer's versioning system will append the model's version (i.e. v4.4-0).
+This inferencer in this repository applies [the model that I created here](https://github.com/kaisubr/PANN__trainer-public) onto real-time game data! The inferencer's versioning system will append the model's version (i.e. v4.4-0).
 
 Paladins is a first-person shooter with complex game mechanics, such as deployables, revealing, and crowd control effects.
 
