@@ -1,4 +1,4 @@
-# Paladins Artificial Neural Network: Inferencing
+# Paladins Artificial Neural Network: Inferencer
 
 This inferencer in this repository applies [the model that I created here](https://github.com/kaisubr/PANN__trainer-public) onto real-time game data! The inferencer's versioning system will append the model's version (i.e. v4.4-0).
 
