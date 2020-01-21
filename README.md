@@ -4,7 +4,7 @@ This inferencer in this repository applies [the model that I created here](https
 
 Paladins is a first-person shooter with complex game mechanics, such as deployables, revealing, and crowd control effects.
 
-The Paladins Artificial Neural Network uses a convolutional neural network that detects enemy models and may be used to intelligently aim the player at a target.
+The Paladins Artificial Neural Network uses a convolutional neural network that detects enemy models and may be used to intelligently aim the player at a target. Trained using Tensorflow. 
 * The network can detect obfuscated enemies, such as revealed enemies behind walls
 * In some cases, the model was able to predict almost completely obstructed bodies
 * The model is able detect partial bodies (such as a torso but no legs)
