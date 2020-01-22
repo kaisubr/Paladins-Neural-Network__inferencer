@@ -38,8 +38,13 @@ v4.4-0 was designed for single frame (300x300 image) inputs.
 
 I plan to upload the Colab .py file and provide a more thorough discussion later. I learned a lot through this experiment, but to combat cheating, I will not release .tflite, .pb, .pbtxt files. This method will be undetectable by EAC since the model only requires the input image.
 
-#### Real-time input
-v4.4-1 can take input and display output in new windows (single threaded).
+#### Video real-time input
+v4.4-1 can take input and display output in real-time. Videos taken from KamiVS and z1unknown.
+* Enemy tracking via mouse (notice the black arrow near center of screen)
+   * ![alt text](/someshots/v1-inference-tracking.gif "")
+* As well as in new windows: (Windows appear on the top left. Forced delay due to OpenCV limitations.)
+   * <img src="/someshots/z1.gif" width="40%" />
+
 
 #### In-game real-time input
 v4.4-2 can take game real-time input.
