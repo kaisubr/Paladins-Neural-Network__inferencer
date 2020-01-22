@@ -55,7 +55,6 @@ st, en, count, tot_elapsed = 0, 0, 0, 0
 shot_start, shot_end = 0, 0
 st = time.perf_counter()
 detector = ObjectDetectorLite(PATH_TO_LITE_MODEL, PATH_TO_LABELS, NUM_CLASSES, THRESHOLD)
-isRunning = False
 # mouse = Controller()
 
 # https://docs.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-mouseinput
@@ -110,13 +109,12 @@ def _check_count(result, func, args):
         raise ctypes.WinError(ctypes.get_last_error())
     return args
 
-
 user32.SendInput.errcheck = _check_count
 user32.SendInput.argtypes = (wintypes.UINT, # nInputs
                              LPINPUT,       # pInputs
                              ctypes.c_int)  # cbSize
 
-## Move mouse helper. THIS WORKS FOR DX11!
+## Move mouse helper. THIS WORKS FOR DX11! Usage: moveTo(x, y, True) # Change to True to move properly while within the game. True = inGame, meaning move dx/dy from center of game, NOT from the current cursor position.
 def moveTo(x, y, inGame):
     print("Ok...")
     
@@ -151,32 +149,60 @@ def moveTo(x, y, inGame):
     # obj = Input( ctypes.c_ulong(1), ii_ )
     # ctypes.windll.user32.SendInput(1, ctypes.pointer(obj), ctypes.sizeof(obj))
 
+def click():
+    # This will click
+    ctypes.windll.user32.mouse_event(2, 0, 0, 0,0) # left down
+    ctypes.windll.user32.mouse_event(4, 0, 0, 0,0) # left up
 
-## Runner. The queue has images to parse
-def run_model(show, queue): 
-    global threads, detector, st, en, count, tot_elapsed# , mouse
+class ImageScreenshot():
+    def __init__(self):
+        self.img = None
+        self.modelX = 0
+        self.modelY = 0
+        self.new = False # Is it a new position?
 
-    if (not queue.empty()):
-        image = queue.get()
-        print(str(queue.qsize()) + " remaining")
+class GrabScreenshotThread(threading.Thread):
+    def __init__(self, name):
+        threading.Thread.__init__(self)
+        self.name = name
+      
+    def run(self):
+        print("Start " + self.name + ", " + str(time.perf_counter))
+        grab_screenshot()
+        print("End " + self.name + ", " + str(time.perf_counter))
 
-        result = detector.detect(image, THRESHOLD)
-        print(result)
+class RunModelThread(threading.Thread):
+    def __init__(self, name):
+        threading.Thread.__init__(self)
+        self.name = name
+      
+    def run(self):
+        print("Start " + self.name + ", " + str(time.perf_counter))
+        run_model(False) # Don't show the output window.
+        print("End " + self.name)
 
-        found = False
+def run_model(show): 
+    global threads, detector, st, en, count, tot_elapsed # , mouse
 
-        for obj in result:
+    while True:
+        if (isRunning and (not (imageScreenshot.img is None))):
+            image = imageScreenshot.img
+
+            result = detector.detect(image, THRESHOLD)
+            print(result)
+
+            found = False
+
+            for obj in result:
                 print('coordinates: {} {}. class: "{}". confidence: {:.2f}'.
-                            format(obj[0], obj[1], obj[3], obj[2]))
+                        format(obj[0], obj[1], obj[3], obj[2]))
                 
                 if (not found):
                     bzx, bzy = int(w/2 - 150), int(h/2 - 150)
-                    print(obj[0]) # top left
 
                     # coordinates within the bounding box 
                     bx_topleft, by_topleft = int(obj[0][0]), int(obj[0][1])
                     bx_bottomright, by_bottomright = int(obj[1][0]), int(obj[1][1])
-                    
                     bx = int((bx_topleft + bx_bottomright)/2)
                     by = int((by_topleft + by_bottomright)/2)
 
@@ -184,107 +210,56 @@ def run_model(show, queue):
                     x = bzx + bx
                     y = bzy + by
 
-                    # This will move
-                    # mouse.position = (x, y)
-                    # ctypes.windll.user32.SetCursorPos(x, y)
-                    # win32api.SetCursorPos((x, y))
-                    # pyautogui.moveTo(x, y, duration=0.0)
-                    moveTo(x, y, True) # True = inGame, meaning move dx/dy from center of game, NOT from the current cursor position.
-
-                    # This will click
-                    ctypes.windll.user32.mouse_event(2, 0, 0, 0,0) # left down
-                    ctypes.windll.user32.mouse_event(4, 0, 0, 0,0) # left up
-
-                    Found = True
+                    # save them
+                    imageScreenshot.modelX = x
+                    imageScreenshot.modelY = y
+                    found = True
 
                 if (show):
                     cv2.rectangle(image, obj[0], obj[1], (0, 255, 0), 2)
                     cv2.putText(image, '{}: {:.2f}'.format(obj[3], obj[2]),
                                 (obj[0][0], obj[0][1] - 5),
                                 cv2.FONT_HERSHEY_PLAIN, 0.85, (0, 255, 0), 2)
-        if (show):
-            cv2.imshow(time.strftime("%H:%M:%S", time.localtime()), cv2.cvtColor(image, cv2.COLOR_RGB2BGR))
-            cv2.waitKey(1000)
-            cv2.destroyAllWindows()
 
-        # if (runagain):
-        #     start_program(True)
-        #     return
-            # threads.pop()
-            # t = threading.Thread(target=run, args=(True,))
-            # t.start()
-            # threads.append(t)
-        en = time.perf_counter()
-        tot_elapsed += (en - st)
-        count += 1
-        st = time.perf_counter()
+                if (found):
+                    break
 
-        # I imagine on GPUs it would be magnitudes faster
-        # On CPU (turbo boost disabled, ~2.1 GHz) processed about 3.7 FPS. 
-        # On CPU (low power mode, ~0.8 GHz) processed about 1.7 FPS.
-        print("Successful run. Avg " + str(tot_elapsed/count) + " sec, processing " + str(count/tot_elapsed) + " fps\n")
-    print("returning.")
+            if (show):
+                cv2.imshow(time.strftime("%H:%M:%S", time.localtime()), cv2.cvtColor(image, cv2.COLOR_RGB2BGR))
+                cv2.waitKey(1000)
+                cv2.destroyAllWindows()
+    
+            en = time.perf_counter()
+            tot_elapsed += (en - st)
+            count += 1
+            st = time.perf_counter()
+            print("[STATS -->] Avg " + str(tot_elapsed/count) + " sec, processing " + str(count/tot_elapsed) + " fps\n")
+
+            imageScreenshot.new = True # flag as new position
+
     return
     
 # run_modelimage = cv2.cvtColor(cv2.imread(PATH_TO_IMAGE), cv2.COLOR_BGR2RGB)
 # run_model(run_modelimage)
-
 
 def update_screen_resolution():
     global w, h, top, left
     w, h = GetSystemMetrics(0), GetSystemMetrics(1)
     top, left = int(h/2 - 150), int(w/2 - 150)
 
-def grab_screenshot(queue):
+def grab_screenshot():
     # The screen part to capture
-    global isRunning
-
     while True:
         if isRunning:
-            # shot_start = time.perf_counter()
-            print("New shot.")
-            
-            # 720/2 - 150
-            print(str(top) + ", " + str(left))
             monitor = {"top": top, "left": left, "width": 300, "height": 300}
-            #fname = cwd + '\j_' + str(i) + '-' + str(version) + '.png'
             img = mss.mss().grab(monitor)
             
             #https://stackoverflow.com/questions/51488275/cant-record-screen-using-mss-and-cv2
             img = np.array(img) # Retrieve as BGRA
-            img = cv2.cvtColor(img, cv2.COLOR_BGRA2RGB) # Reshape to RGB
-
-            
-            queue.put(img)
-            # shot_end = time.perf_counter()
-            # print("Shot finished in " + str(shot_end - shot_start) + " sec")
-
-            # threading.Timer(0.0, run_model, args=(False, queue,)).start()
-            run_model(False, queue)
-            
-            # queue.join()
-            # run_model(img, False)
-            #mss.tools.to_png(img.rgb, img.size, output=fname)   
-
+            img = cv2.cvtColor(img, cv2.COLOR_BGRA2RGB) # Reshape to RGB    
         
-    return
-
-# Deprecated, see __main__ 
-def start_program():
-    global running, st, en, count, tot_elapsed
-
-    if (True):
-        en = time.perf_counter()
-        tot_elapsed += (en - st)
-        count += 1
-        st = time.perf_counter()
-
-        print("Successful run. Avg " + str(tot_elapsed/count) + " sec, processing " + str(count/tot_elapsed) + " fps\n")
+            imageScreenshot.img = img
     
-    print("New shot.")
-    grab_screenshot(True)
-    # threading.Timer(0.2, run).start() 
-
     return
 
 def flipRunning(event):
@@ -305,18 +280,22 @@ keyboard.on_press(flipRunning)
 # Run
 if __name__=="__main__":
     update_screen_resolution()
+    isRunning = False
+    imageScreenshot = ImageScreenshot()
+    
+    grab_screenshot_thread = GrabScreenshotThread("GrabScreenshotThread")
+    run_model_thread = RunModelThread("RunModelThread")
+    
+    # Start threads once. Individual threads have while loops to run at their own pace.
+    grab_screenshot_thread.start() 
+    run_model_thread.start()
 
-    queue = queue.Queue() # multiprocessing.JoinableQueue()
+    # Move and click.
+    while True:
+        if (isRunning and (imageScreenshot.new) and (not (imageScreenshot.img is None)) and (imageScreenshot.modelX != 0) and (imageScreenshot.modelY != 0)):
+            
+            moveTo(imageScreenshot.modelX, imageScreenshot.modelY, True) # Change to True while in game.
+            click()
 
-    grab_screenshot(queue)
-
-    moveTo(0,0, False)
-    # grabsct = multiprocessing.Process(target=grab_screenshot, args=(queue, ))
-    # modeler = multiprocessing.Process(target=run_model, args=(False, queue, ))
-
-    # starting our processes
-    # grabsct.start()
-    # modeler.start()
-# t = threading.Thread(target=run, args=(True,))
-# t.start()
-# threads.append(t)
+            imageScreenshot.new = False # Position is no longer new, no need to move.
+        
