@@ -23,9 +23,6 @@ Inference graphs were saved from EnemyDetection/inference_graph/saved_model OR f
 
 ### What did the results look like?
 
-#### In-game real-time input
-v4.4-1 is still being worked on! I will likely continue using Python `mss` to take in data.
-
 #### Single frame inputs
 v4.4-0 was designed for single frame (300x300 image) inputs.
 * It was able to detect nearly completely obstructed bodies in complex game environments.
@@ -40,6 +37,15 @@ v4.4-0 was designed for single frame (300x300 image) inputs.
 * More results can be viewed in /someshots/.
 
 I plan to upload the Colab .py file and provide a more thorough discussion later. I learned a lot through this experiment, but to combat cheating, I will not release .tflite, .pb, .pbtxt files. This method will be undetectable by EAC since the model only requires the input image.
+
+#### Real-time input
+v4.4-1 can take input and display output in new windows (single threaded).
+
+#### In-game real-time input
+v4.4-2 can take game real-time input.
+* I didn't have a GPU to test with. While in game, the model could analyze 1-2 frames per second, and Paladins could still render about 30 FPS; unfortunately, even incorporating multithreading couldn't improve it. I was running Paladins and my script at the same time, which was clearly stressful for the CPU. Future improvements could utilize multiprocessing, or maybe using a different language altogether. 
+* Although it may have been slow, it did detect enemies with decent accuracy; since detection took time, it was interesting to note that the mouse movement was delayed when the enemies moved. 
+* Mouse movement did not work with pyautogui or pynput, so I resorted to ctypes.
 
 <!-- 
 Notes to self: .../raw contains raw data & xml files, along with 0noxml and 0rename 
