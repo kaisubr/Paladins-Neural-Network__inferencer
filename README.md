@@ -14,7 +14,7 @@ The inferencer is multithreaded and continuously takes in 300x300 input from the
 
 <img src="someshots/ingame_v2.gif" width="100%" />
 
-*Model run on CPU only, Intel i7-6500U, which is a U-series Intel chip (meaning it consumes ultra-low power).*
+*Model run on CPU only, 2.50 GHz Intel i7-6500U, which is a U-series Intel chip (meaning it consumes ultra-low power).*
 
 ## How accurate is it?
 
