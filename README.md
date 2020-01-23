@@ -10,14 +10,21 @@ The Paladins Artificial Neural Network uses a convolutional neural network that 
 * The model is able detect partial bodies (such as a torso but no legs)
 * The model is able to differentiate enemies and allies in complicated environments
 
-## How effective is it?
+The inferencer is multithreaded and continuously takes in 300x300 input from the center of the screen. 
+
+<img src="someshots/ingame_v2.gif" width="100%" />
+
+*Model run on CPU only, Intel i7-6500U, which is a U-series Intel chip (meaning it consumes ultra-low power).*
+
+## How accurate is it?
+
+<p align="center"><img src="/someshots/mAP.PNG" /></p>
+
 After several iterations, v4.4 performs as follows:
 * On i7-6500U (CPU only), my model averaged 0.18 seconds for a single frame image processing.
 * 0.806 mAP at 0.5 IOU in 60k steps.
 * 0.701 mAP at [0.5...0.95] IOU, area = large, in 60k steps.
 * Loss for final step was 1.8736447. This can be lowered by further training.
-
-![alt text](/someshots/mAP.PNG "")
 
 Inference graphs were saved from EnemyDetection/inference_graph/saved_model OR frozen_inference_graph.pb if that's available. For the ssdlite network, it was saved through Tensorflow toco `tflite_convert` (alternatively you can use `bazel`).
 
@@ -47,7 +54,9 @@ v4.4-1 can take input and display output in real-time. Videos taken from KamiVS 
 
 
 #### In-game real-time input
+
 v4.4-2 can take game real-time input.
+* <img src="someshots/ingame_v2.gif" />
 * I didn't have a GPU to test with. While in game, the model could analyze 1-2 frames per second, and Paladins could still render about 30 FPS; unfortunately, even incorporating multithreading couldn't improve it. I was running Paladins and my script at the same time, which was clearly stressful for the CPU. Future improvements could utilize multiprocessing, or maybe using a different language altogether. 
 * Although it may have been slow, it did detect enemies with decent accuracy; since detection took time, it was interesting to note that the mouse movement was delayed when the enemies moved. 
 * Mouse movement did not work with pyautogui or pynput, so I resorted to ctypes.
