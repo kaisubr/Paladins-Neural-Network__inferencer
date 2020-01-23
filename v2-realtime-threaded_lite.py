@@ -268,6 +268,9 @@ def flipRunning(event):
 
     if (event.name == 'caps lock'):
         update_screen_resolution()
+        print("Running switch, originally: ")
+        print(isRunning)
+        print()
         if (not isRunning): 
             isRunning = True
             st, en, count, tot_elapsed = 0, 0, 0, 0
